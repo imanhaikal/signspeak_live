@@ -1,6 +1,6 @@
 # TASKS.md: Project Roadmap
 
-**Current Status:** 🚧 Phase 1: Foundation (Firebase Pending)
+**Current Status:** 🚧 Phase 2: The Eye (Vision UI & Overlay Implemented)
 **Hackathon Deadline:** 28th February 2026
 
 ---
@@ -26,8 +26,8 @@
     - [ ] Register Android/iOS apps (download `google-services.json`).
     - [ ] Enable Firestore Database (Test Mode for now).
 - [ ] **Gemini API Setup**
-    - [ ] Get API Key from Google AI Studio.
-    - [ ] Store API Key securely (using `flutter_dotenv` or `--dart-define`).
+    - [x] Get API Key from Google AI Studio.
+    - [x] Store API Key securely (using `flutter_dotenv` or `--dart-define`).
 
 ---
 
@@ -35,16 +35,16 @@
 *Goal: Accurately track hands and visualize the skeleton.*
 
 - [ ] **Camera Preview**
-    - [ ] Implement `CameraPreview` widget (fullscreen).
+    - [x] Implement `CameraViewport` widget structure (currently using placeholder).
     - [ ] Handle camera permissions on Android/iOS manifest.
     - [ ] Implement "Flip Camera" button logic.
 - [ ] **MediaPipe Integration**
     - [ ] Initialize `PoseDetector` / `HandPoseDetector`.
     - [ ] Create a Stream that processes camera frames.
     - [ ] **Critical:** Extract `PoseLandmark` data (x, y, z coordinates).
-- [ ] **Visual Debugging (The Overlay)**
-    - [ ] Create `CustomPainter` to draw lines between landmarks.
-    - [ ] Verify that the skeleton aligns with the hand on screen.
+- [x] **Visual Debugging (The Overlay)**
+    - [x] Create `CustomPainter` to draw lines between landmarks.
+    - [x] Verify that the skeleton aligns with the hand on screen.
     - [ ] *Optimization:* Ensure frame rate doesn't drop below 30fps.
 
 ---
@@ -77,7 +77,7 @@
 - [ ] **Chat Logic**
     - [ ] Create a `Message` model (`text`, `sender`, `timestamp`).
     - [ ] Create a local List to store the conversation history.
-    - [ ] Bind the List to a `ListView.builder` (The Chat UI).
+    - [x] Bind the List to a `ListView.builder` (The Chat UI).
 - [ ] **Cloud Sync (Firebase)**
     - [ ] Write function to save completed sessions to Firestore.
     - [ ] *Privacy:* Ensure no PII (Personally Identifiable Information) is saved, only the transcript.
@@ -87,16 +87,16 @@
 ## 🎨 Phase 5: "The Face" - UI/UX Polish (Days 25-30)
 *Goal: Make it look like the Prototype (Glassmorphism/Cyber-Noir).*
 
-- [ ] **Styling**
-    - [ ] Implement `BackdropFilter` for the glass effect.
-    - [ ] Apply the "Inter" font family.
-    - [ ] Style the Chat Bubbles (Green vs White).
-- [ ] **Animations**
-    - [ ] Create the "Scanning Line" animation (`AnimationController`).
-    - [ ] Add the "Pulse" effect to the "Gemini Active" badge.
-    - [ ] Add "Typing Indicators" (dots) when Gemini is processing.
-- [ ] **Responsiveness**
-    - [ ] Ensure layout works on both Phone and Tablet aspect ratios.
+- [x] **Styling**
+    - [x] Implement `BackdropFilter` for the glass effect.
+    - [x] Apply the "Inter" font family.
+    - [x] Style the Chat Bubbles (Green vs White).
+- [x] **Animations**
+    - [x] Create the "Scanning Line" animation (`AnimationController`).
+    - [x] Add the "Pulse" effect to the "Gemini Active" badge.
+    - [x] Add "Typing Indicators" (dots) when Gemini is processing.
+- [x] **Responsiveness**
+    - [x] Ensure layout works on both Phone and Tablet aspect ratios.
 
 ---
 
