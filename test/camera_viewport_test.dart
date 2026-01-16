@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:signspeak_live/widgets/camera_viewport.dart';
+import 'package:signspeak_live/widgets/camera/camera_viewport.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 
 void main() {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 class CameraViewport extends StatefulWidget {
   const CameraViewport({super.key});

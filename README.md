@@ -4,6 +4,9 @@ A Flutter recreation of a high-fidelity Sign Language Translation interface.
 
 ## Features
 
+*   **Real-time Sign Language Recognition:** Leveraging ML Kit for pose detection to interpret sign language gestures.
+*   **Text-to-Speech (TTS):** Converts translated text into audible speech for seamless communication.
+*   **Custom Camera Interface:** Specialized camera implementation for optimal frame capture and processing.
 *   **Immersive Camera Viewport:** Includes a MediaPipe overlay simulation to demonstrate hand tracking capabilities.
 *   **Real-time Scanning Animation:** Engaging visual feedback simulating active scanning processes.
 *   **Glassmorphic Chat Interface:** A modern, translucent UI design featuring animated typing indicators.
@@ -17,6 +20,17 @@ A Flutter recreation of a high-fidelity Sign Language Translation interface.
     *   `flutter_animate`
     *   `google_fonts`
     *   `google_mlkit_pose_detection`
+
+## Project Structure
+
+The project follows a feature-first and layered architecture:
+
+*   `assets/`: For images, models, and fonts.
+*   `lib/config/`: Configuration and constants.
+*   `lib/models/`: Data models (e.g., `RecognitionResult`).
+*   `lib/services/`: Business logic (Camera, ML, TTS).
+*   `lib/utils/`: Helper utilities.
+*   `lib/widgets/`: UI components organized by feature (`camera`, `interaction`, `common`).
 
 ## Setup Instructions
 

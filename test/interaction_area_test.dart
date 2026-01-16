@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:signspeak_live/widgets/interaction_area.dart';
+import 'package:signspeak_live/widgets/interaction/interaction_area.dart';
 
 void main() {
   testWidgets('InteractionArea UI Verification', (WidgetTester tester) async {

@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import '../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 class InteractionArea extends StatefulWidget {
   const InteractionArea({super.key});

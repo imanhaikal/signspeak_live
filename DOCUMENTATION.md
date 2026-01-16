@@ -1,52 +1,59 @@
-# SignSpeak Live: MVP Prototype Documentation
+# SignSpeak Live: MVP Documentation
 
 ## 1. Project Overview
-SignSpeak Live is a high-fidelity mobile prototype designed to demonstrate the user experience of a real-time Sign Language Translation application. This MVP focuses on the visual interface, animations, and user flow for a "Deaf User" to "Hearing Staff" service counter scenario.
+SignSpeak Live is a real-time Sign Language Translation application designed to bridge communication gaps between Deaf and hearing individuals. The application leverages on-device Machine Learning to interpret sign language gestures and converts them into spoken text, while simultaneously transcribing spoken words into text for the Deaf user.
 
-**Current Status:** High-Fidelity UI Prototype (Simulated Logic)
+**Current Status:** Functional MVP Architecture (UI + Service Logic Stubs)
 
-## 2. Architecture
-The application follows a standard Flutter widget composition model, centered around a layered `Stack` layout to mimic an Augmented Reality (AR) experience.
+## 2. Directory Structure
+The project adopts a feature-first and layered architecture to ensure scalability and maintainability:
+
+*   `lib/`
+    *   `config/`: App-wide constants and configuration.
+    *   `models/`: Data models (e.g., `RecognitionResult`) for structured data passing.
+    *   `screens/`: High-level screen containers (e.g., `HomeScreen`).
+    *   `services/`: Core business logic and external integrations (`CameraService`, `MLService`, `TtsService`).
+    *   `theme/`: Application design system and styling.
+    *   `utils/`: Helper functions (e.g., `image_utils.dart`).
+    *   `widgets/`: Reusable UI components organized by domain (`camera`, `interaction`, `common`).
+
+## 3. Architecture
+The application is built on a clear separation of concerns, dividing responsibilities between the User Interface, Business Logic, and Data Models.
+
+### 3.1 Logical Layer (Services)
+The core functionality is encapsulated within dedicated service classes:
+*   **`CameraService`**: Responsible for initializing the camera, handling permissions, and managing the video stream.
+*   **`MLService`**: Manages the loading of Machine Learning models (e.g., TFLite) and performing inference on video frames to detect signs.
+*   **`TtsService`**: Handles Text-to-Speech synthesis, converting translated sign language text into audible speech.
+
+### 3.2 Data Layer (Models)
+*   **`RecognitionResult`**: A standardized model representing the output of the ML detection, containing the label, confidence score, and bounding box coordinates (`rect`).
+
+### 3.3 UI Layer (Widgets)
+The visual interface follows a composition model using a layered `Stack` layout to support Augmented Reality (AR) features.
 
 **Widget Tree:**
 `HomeScreen`
  └── `Scaffold` (Void Black Background)
       └── `Stack`
-           ├── `CameraViewport` (Video Feed + AR Overlays)
+           ├── `CameraViewport` (Camera Feed + AR/Bounding Box Overlays)
            └── `InteractionArea` (Chat UI + Controls)
 
-## 3. Module Details
+## 4. Module Details
 
-### 3.1 Camera Viewport (`lib/widgets/camera_viewport.dart`)
-This widget simulates the computer vision layer of the application.
+### 4.1 Camera Viewport (`lib/widgets/camera/`)
+Simulates or renders the computer vision layer.
+*   **`CameraViewport`**: Main container for the camera feed.
+*   **`BoundingBoxOverlay`**: Visualizes detection results (e.g., hand tracking landmarks or bounding boxes) over the camera feed.
+*   **Status Indicators**: Visual cues for active ML processing (e.g., "GEMINI VISION ACTIVE" or model status).
 
-*   **Video Feed**: Uses a placeholder network image (`Image.network`) to represent the camera stream.
-*   **SkeletonPainter**:
-    *   A custom `CustomPainter` that draws a static hand skeleton (landmarks and connections) to simulate MediaPipe hand tracking visualization.
-    *   Draws joints (`drawCircle`) and connections (`drawLine`) using semi-transparent white paints.
-*   **ScanLine Animation**:
-    *   Uses an `AnimationController` (3s duration, repeating) and `AnimatedBuilder`.
-    *   Moves a `FractionallySizedBox` vertically across the screen to simulate an active scanning process.
-*   **Status Indicators**:
-    *   **BIM (MY)**: Indicates the currently active sign language model.
-    *   **GEMINI VISION ACTIVE**: A pulsating indicator (using `flutter_animate` effects: Fade & Scale) showing that the AI vision model is "processing" input.
+### 4.2 Interaction Area (`lib/widgets/interaction/`)
+Handles the communication interface between the user and the system.
+*   **Glassmorphism**: Uses `BackdropFilter` and semi-transparent colors to create a modern, unobtrusive overlay.
+*   **Chat UI**: Displays the bi-directional conversation (transcribed speech and translated signs).
+*   **Controls**: Microphone input with pulse animations, keyboard toggle, and camera controls.
 
-### 3.2 Interaction Area (`lib/widgets/interaction_area.dart`)
-This widget handles the communication interface between the user and the system.
-
-*   **Glassmorphism**:
-    *   The "User Message" bubble uses `BackdropFilter` with `ImageFilter.blur` and a semi-transparent white color (`AppColors.glassWhite`) to create a frosted glass effect over the underlying camera feed.
-*   **Chat UI**:
-    *   Displays a hardcoded conversation flow ("Live Session").
-    *   **User Message**: "I need to renew my identification card..." (Simulated translation).
-    *   **Staff Message**: "I can help with that..." (Simulated speech-to-text).
-*   **Typing Indicator**:
-    *   A row of three dots that animate sequentially (`.scale` with delay) to indicate system activity.
-*   **Controls**:
-    *   **Microphone**: A central button with an expanding "Pulse Ring" animation (`AnimationController`) to invite voice input.
-    *   **Secondary Actions**: Keyboard input and Camera flip/refresh buttons.
-
-## 4. Theming (`lib/theme/app_theme.dart`)
+## 5. Theming (`lib/theme/app_theme.dart`)
 The app utilizes a specialized dark theme to enhance contrast and readability in various lighting conditions.
 
 *   **Color Palette**:
@@ -55,21 +62,11 @@ The app utilizes a specialized dark theme to enhance contrast and readability in
     *   **Glass White**: Semi-transparent white for overlays.
 *   **Typography**:
     *   **Inter**: Used for all text elements to ensure clean, modern legibility.
-    *   Styles defined in `AppTextStyles` (Body, Header, Caption).
-
-## 5. Testing Strategy
-The project employs Widget Testing to verify UI components and their initial states.
-
-*   **Mocking Network Images**:
-    *   Uses the `network_image_mock` package to prevent 404 errors during tests when rendering `Image.network` widgets in `CameraViewport`.
-*   **Key Test Cases**:
-    *   **`camera_viewport_test.dart`**: Verifies the presence of status badges ("GEMINI VISION ACTIVE") and header icons.
-    *   **`interaction_area_test.dart`**: Confirms that specific chat messages are rendered and that control buttons (Mic, Keyboard) are present.
 
 ## 6. Future Improvements
-To transition this prototype into a functional product, the following steps are required:
+To transition this MVP into a fully functional product, the following steps are prioritized:
 
-1.  **MediaPipe Integration**: Replace `SkeletonPainter` with real-time `google_mlkit_pose_detection` or `mediapipe` flutter plugin data.
-2.  **Real-Time Backend**: Connect the `CameraService` to the Gemini API (multimodal) to send actual video frames for translation.
-3.  **State Management**: Implement Riverpod or Bloc to handle actual chat messages and application state instead of hardcoded widgets.
-4.  **Speech-to-Text**: Integrate the device's native Speech-to-Text API for the "Hearing Staff" input.
+1.  **Service Implementation**: Flesh out the `TODO` stubs in `CameraService`, `MLService`, and `TtsService` with actual logic (CameraX, TFLite/Mediapipe, Flutter TTS).
+2.  **MediaPipe/ML Kit Integration**: Fully integrate `google_mlkit_pose_detection` or equivalent for real-time skeletal tracking.
+3.  **State Management**: Implement a reactive state management solution (e.g., Riverpod or Bloc) to connect the Services with the UI.
+4.  **Real-Time Backend**: Connect the `CameraService` to external APIs (like Gemini Multimodal) if cloud-based inference is required.
