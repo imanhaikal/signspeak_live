@@ -21,11 +21,11 @@
         - [x] `google_mlkit_pose_detection` (MediaPipe wrapper)
         - [x] `speech_to_text`
         - [x] `firebase_core` & `cloud_firestore`
-- [ ] **Firebase Initialization**
-    - [ ] Create Project in Firebase Console ("SignSpeak-2026").
-    - [ ] Register Android/iOS apps (download `google-services.json`).
-    - [ ] Enable Firestore Database (Test Mode for now).
-- [ ] **Gemini API Setup**
+- [x] **Firebase Initialization**
+    - [x] Create Project in Firebase Console ("SignSpeak-2026").
+    - [x] Register Android/iOS apps (download `google-services.json`).
+    - [x] Enable Firestore Database (Test Mode for now).
+- [x] **Gemini API Setup**
     - [x] Get API Key from Google AI Studio.
     - [x] Store API Key securely (using `flutter_dotenv` or `--dart-define`).
 
