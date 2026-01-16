@@ -1,6 +1,6 @@
 # TASKS.md: Project Roadmap
 
-**Current Status:** 🚧 In Development
+**Current Status:** 🚧 Phase 1: Foundation (Firebase Pending)
 **Hackathon Deadline:** 28th February 2026
 
 ---
@@ -8,19 +8,19 @@
 ## 📅 Phase 1: Foundation & Setup (Days 1-3)
 *Goal: Get the "Hello World" of all Google technologies working.*
 
-- [ ] **Repository Setup**
-    - [ ] Initialize Git repository.
-    - [ ] Create `README.md`, `REQUIREMENTS.md`, `DESIGN.md`.
-    - [ ] Set up `.gitignore` for Flutter.
-- [ ] **Flutter Environment**
-    - [ ] `flutter create signspeak_live`
-    - [ ] Set up Android SDK / iOS Podfile.
-    - [ ] Install essential packages:
-        - [ ] `camera`
-        - [ ] `google_generative_ai` (Gemini SDK)
-        - [ ] `google_mlkit_pose_detection` (MediaPipe wrapper)
-        - [ ] `speech_to_text`
-        - [ ] `firebase_core` & `cloud_firestore`
+- [x] **Repository Setup**
+    - [x] Initialize Git repository.
+    - [x] Create `README.md`, `REQUIREMENTS.md`, `DESIGN.md`.
+    - [x] Set up `.gitignore` for Flutter.
+- [x] **Flutter Environment**
+    - [x] `flutter create signspeak_live`
+    - [x] Set up Android SDK / iOS Podfile.
+    - [x] Install essential packages:
+        - [x] `camera`
+        - [x] `google_generative_ai` (Gemini SDK)
+        - [x] `google_mlkit_pose_detection` (MediaPipe wrapper)
+        - [x] `speech_to_text`
+        - [x] `firebase_core` & `cloud_firestore`
 - [ ] **Firebase Initialization**
     - [ ] Create Project in Firebase Console ("SignSpeak-2026").
     - [ ] Register Android/iOS apps (download `google-services.json`).
