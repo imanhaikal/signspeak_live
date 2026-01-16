@@ -1,137 +1,75 @@
-# SignSpeak Live: Technical Documentation
+# SignSpeak Live: MVP Prototype Documentation
 
-## 1. System Architecture
+## 1. Project Overview
+SignSpeak Live is a high-fidelity mobile prototype designed to demonstrate the user experience of a real-time Sign Language Translation application. This MVP focuses on the visual interface, animations, and user flow for a "Deaf User" to "Hearing Staff" service counter scenario.
 
-SignSpeak Live is built on a hybrid processing model to ensure low latency and high accuracy, crucial for real-time translation.
+**Current Status:** High-Fidelity UI Prototype (Simulated Logic)
 
-### 1.1 High-Level Data Flow
+## 2. Architecture
+The application follows a standard Flutter widget composition model, centered around a layered `Stack` layout to mimic an Augmented Reality (AR) experience.
 
-```mermaid
-sequenceDiagram
-    participant User as Deaf User
-    participant Cam as Camera (Flutter)
-    participant MP as MediaPipe (On-Device)
-    participant Cloud as Gemini API
-    participant UI as Staff UI
-    
-    User->>Cam: Signs in BIM
-    Cam->>MP: Video Frames
-    MP->>MP: Extract Hand Landmarks (x,y,z)
-    MP->>Cloud: Send Vector Sequence (JSON)
-    Cloud->>Cloud: Interpret Gesture
-    Cloud->>UI: Return Text Translation
-```
+**Widget Tree:**
+`HomeScreen`
+ └── `Scaffold` (Void Black Background)
+      └── `Stack`
+           ├── `CameraViewport` (Video Feed + AR Overlays)
+           └── `InteractionArea` (Chat UI + Controls)
 
-### 1.2 Core Components
+## 3. Module Details
 
-1.  **Flutter Frontend**: The presentation layer handling camera input, UI rendering, and state management.
-2.  **MediaPipe Service (Local)**: Runs on the device's CPU/GPU. It takes raw video frames and outputs a 21-point skeletal model for each hand.
-3.  **Gemini Service (Remote)**: Acts as the translation engine. It receives the lightweight vector data and uses its multimodal/reasoning capabilities to infer the meaning of the gesture.
-4.  **Speech Service (Hybrid)**: Uses on-device speech recognition (Android/iOS native) or Google Cloud STT for high-fidelity audio-to-text conversion.
+### 3.1 Camera Viewport (`lib/widgets/camera_viewport.dart`)
+This widget simulates the computer vision layer of the application.
 
----
+*   **Video Feed**: Uses a placeholder network image (`Image.network`) to represent the camera stream.
+*   **SkeletonPainter**:
+    *   A custom `CustomPainter` that draws a static hand skeleton (landmarks and connections) to simulate MediaPipe hand tracking visualization.
+    *   Draws joints (`drawCircle`) and connections (`drawLine`) using semi-transparent white paints.
+*   **ScanLine Animation**:
+    *   Uses an `AnimationController` (3s duration, repeating) and `AnimatedBuilder`.
+    *   Moves a `FractionallySizedBox` vertically across the screen to simulate an active scanning process.
+*   **Status Indicators**:
+    *   **BIM (MY)**: Indicates the currently active sign language model.
+    *   **GEMINI VISION ACTIVE**: A pulsating indicator (using `flutter_animate` effects: Fade & Scale) showing that the AI vision model is "processing" input.
 
-## 2. API Reference & Integration
+### 3.2 Interaction Area (`lib/widgets/interaction_area.dart`)
+This widget handles the communication interface between the user and the system.
 
-### 2.1 Gemini 3 Flash (Vision/Text)
+*   **Glassmorphism**:
+    *   The "User Message" bubble uses `BackdropFilter` with `ImageFilter.blur` and a semi-transparent white color (`AppColors.glassWhite`) to create a frosted glass effect over the underlying camera feed.
+*   **Chat UI**:
+    *   Displays a hardcoded conversation flow ("Live Session").
+    *   **User Message**: "I need to renew my identification card..." (Simulated translation).
+    *   **Staff Message**: "I can help with that..." (Simulated speech-to-text).
+*   **Typing Indicator**:
+    *   A row of three dots that animate sequentially (`.scale` with delay) to indicate system activity.
+*   **Controls**:
+    *   **Microphone**: A central button with an expanding "Pulse Ring" animation (`AnimationController`) to invite voice input.
+    *   **Secondary Actions**: Keyboard input and Camera flip/refresh buttons.
 
-We use **Gemini 3 Flash** because it offers the best balance of speed and reasoning for this specific use case.
+## 4. Theming (`lib/theme/app_theme.dart`)
+The app utilizes a specialized dark theme to enhance contrast and readability in various lighting conditions.
 
-**Endpoint:** `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`
+*   **Color Palette**:
+    *   **Void Black** (`#000000`): Main background to blend with camera borders.
+    *   **SignSpeak Green** (`#22C55E`): Primary accent color for success states and active indicators.
+    *   **Glass White**: Semi-transparent white for overlays.
+*   **Typography**:
+    *   **Inter**: Used for all text elements to ensure clean, modern legibility.
+    *   Styles defined in `AppTextStyles` (Body, Header, Caption).
 
-**System Prompt Strategy:**
-The prompt is engineered to act as a linguistic bridge between "Motion Data" and "Natural Language".
+## 5. Testing Strategy
+The project employs Widget Testing to verify UI components and their initial states.
 
-> **System Instruction:**
-> "You are an expert Sign Language Interpreter for Bahasa Isyarat Malaysia (BIM).
-> Input: A JSON array of hand landmark coordinates captured over 1-2 seconds.
-> Output: The direct translation of the gesture in English. If the gesture is ambiguous, output '...'."
+*   **Mocking Network Images**:
+    *   Uses the `network_image_mock` package to prevent 404 errors during tests when rendering `Image.network` widgets in `CameraViewport`.
+*   **Key Test Cases**:
+    *   **`camera_viewport_test.dart`**: Verifies the presence of status badges ("GEMINI VISION ACTIVE") and header icons.
+    *   **`interaction_area_test.dart`**: Confirms that specific chat messages are rendered and that control buttons (Mic, Keyboard) are present.
 
-**Request Payload Structure (Simplified):**
-```json
-{
-  "contents": [{
-    "parts": [{
-      "text": "[{\"frame\": 1, \"left_hand\": [...], \"right_hand\": [...]}, ...]"
-    }]
-  }]
-}
-```
+## 6. Future Improvements
+To transition this prototype into a functional product, the following steps are required:
 
-### 2.2 Google Cloud Speech-to-Text
-
-Used for the "Hearing Staff" to "Deaf User" communication loop.
-
-**Configuration:**
-*   **Encoding:** `LINEAR16`
-*   **Sample Rate:** 16000 Hz
-*   **Language Code:** `ms-MY` (Bahasa Melayu) / `en-MY` (Malaysian English)
-*   **Model:** `command_and_search` (Optimized for short, directive phrases common in service counters).
-
----
-
-## 3. Data Models (Firestore)
-
-We utilize Firebase Firestore for session logging and analytics. No personal video or audio data is stored.
-
-### 3.1 Collection: `sessions`
-
-Stores metadata about each translation session.
-
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `id` | `string` | UUID for the session. |
-| `start_timestamp` | `timestamp` | Server time when session began. |
-| `end_timestamp` | `timestamp` | Server time when session ended. |
-| `location_id` | `string` | Identifier for the deployment site (e.g., "HKL_Counter_4"). |
-| `total_interactions` | `number` | Count of translation exchanges. |
-
-### 3.2 Collection: `logs` (Sub-collection of `sessions`)
-
-Stores individual message events.
-
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `sender` | `string` | `user` (Deaf) or `staff` (Hearing). |
-| `type` | `string` | `sign_to_text` or `speech_to_text`. |
-| `content` | `string` | The translated text. |
-| `confidence` | `float` | AI confidence score (0.0 - 1.0). |
-| `latency_ms` | `integer` | Processing time in milliseconds. |
-
----
-
-## 4. Key Classes & Services
-
-### 4.1 `CameraService` (`lib/services/camera_service.dart`)
-*   **Responsibility:** Manages the camera controller and the image stream.
-*   **Key Method:** `startImageStream(onImage: (CameraImage) -> void)`
-*   **Note:** Handles frame rate throttling to prevent overheating and reduce API costs.
-
-### 4.2 `LandmarkParser` (`lib/utils/landmark_parser.dart`)
-*   **Responsibility:** Normalizes MediaPipe output.
-*   **Logic:** Converts relative coordinates (0.0 - 1.0) to a standardized vector format. It also filters out "noise" (jittery hands) before sending data to Gemini.
-
-### 4.3 `GeminiService` (`lib/services/gemini_service.dart`)
-*   **Responsibility:** HTTP wrapper for the Gemini API.
-*   **Key Feature:** Implements a "debounce" mechanism. It waits for the user's hands to stop moving (pause in signing) before triggering a request, mimicking how human interpreters wait for a sentence to finish.
-
----
-
-## 5. Security & Privacy
-
-### 5.1 Data Minimization
-*   **Video:** Never leaves the device. Processed in RAM only.
-*   **Audio:** Transcribed immediately and discarded.
-*   **Logs:** Only text logs are kept for quality assurance.
-
-### 5.2 API Security
-*   API Keys are stored in `.env` and injected at build time.
-*   In production, these keys should be restricted by application ID (SHA-1 fingerprint) in the Google Cloud Console.
-
----
-
-## 6. Future Roadmap (Post-MVP)
-
-1.  **Offline Model Distillation:** Fine-tune a TensorFlow Lite model on the Gemini outputs to allow for basic offline translation.
-2.  **Custom BIM Vocabulary:** Allow agencies to add custom signs (e.g., "Passport", "Fine", "Report") via a web portal.
-3.  **Two-Way Avatar:** Use a 3D avatar to sign back to the user (Text-to-Sign) for a complete loop.
+1.  **MediaPipe Integration**: Replace `SkeletonPainter` with real-time `google_mlkit_pose_detection` or `mediapipe` flutter plugin data.
+2.  **Real-Time Backend**: Connect the `CameraService` to the Gemini API (multimodal) to send actual video frames for translation.
+3.  **State Management**: Implement Riverpod or Bloc to handle actual chat messages and application state instead of hardcoded widgets.
+4.  **Speech-to-Text**: Integrate the device's native Speech-to-Text API for the "Hearing Staff" input.

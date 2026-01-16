@@ -1,30 +1,38 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:signspeak_live/main.dart';
+import 'package:network_image_mock/network_image_mock.dart';
+import 'package:signspeak_live/screens/home_screen.dart';
+import 'package:signspeak_live/widgets/camera_viewport.dart';
+import 'package:signspeak_live/widgets/interaction_area.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('HomeScreen initialization test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    // Wrap in MaterialApp for Theme and MediaQuery context
+    await mockNetworkImagesFor(() async {
+      await tester.pumpWidget(const MaterialApp(home: HomeScreen()));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+      // Pump to allow animations to settle.
+      // Using pumpAndSettle can be tricky with infinite animations, so sometimes a fixed duration pump is safer if loop animations exist.
+      // However, detected timers often mean pumpAndSettle times out or doesn't finish if logic keeps reposting.
+      // CameraViewport has a repeating animation controller.
+      // InteractionArea has a repeating animation controller.
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+      // Instead of pumpAndSettle, let's pump for a specific duration to "fast forward" any initial animations
+      // and ensure pending timers are handled if possible, or just accept that we are taking a snapshot.
+      // But we MUST dispose properly or handle infinite animations.
+      // flutter_animate often plays nice, but repeating animations in StatefulWidgets need care in tests.
+      await tester.pump(const Duration(seconds: 2));
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      // Verify presence of main components
+      expect(find.byType(CameraViewport), findsOneWidget);
+      expect(find.byType(InteractionArea), findsOneWidget);
+
+      // Verify text content from children
+      expect(find.text('BIM (MY)'), findsOneWidget);
+      expect(find.textContaining('Live Session'), findsOneWidget);
+    });
   });
 }
