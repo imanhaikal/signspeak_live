@@ -161,7 +161,7 @@ void main() {
 
       // We must check if controller is not null
       final controller1 = cameraService.controller;
-      final initialCameraId = await controller1!.cameraId;
+      final initialCameraId = controller1!.cameraId;
 
       // Act - Switch (Camera 2)
       await cameraService.switchCamera();
