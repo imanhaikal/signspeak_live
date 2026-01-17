@@ -38,10 +38,10 @@
     - [x] Implement `CameraViewport` widget structure (currently using placeholder).
     - [x] Handle camera permissions on Android/iOS manifest.
     - [x] Implement "Flip Camera" button logic.
-- [ ] **MediaPipe Integration**
-    - [ ] Initialize `PoseDetector` / `HandPoseDetector`.
-    - [ ] Create a Stream that processes camera frames.
-    - [ ] **Critical:** Extract `PoseLandmark` data (x, y, z coordinates).
+- [x] **MediaPipe Integration**
+    - [x] Initialize `PoseDetector` / `HandPoseDetector`.
+    - [x] Create a Stream that processes camera frames.
+    - [x] **Critical:** Extract `PoseLandmark` data (x, y, z coordinates).
 - [x] **Visual Debugging (The Overlay)**
     - [x] Create `CustomPainter` to draw lines between landmarks.
     - [x] Verify that the skeleton aligns with the hand on screen.

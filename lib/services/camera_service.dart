@@ -16,6 +16,9 @@ class CameraService {
 
   CameraController? get controller => _controller;
 
+  CameraDescription? get cameraDescription =>
+      _cameras.isNotEmpty ? _cameras[_selectedCameraIndex] : null;
+
   Future<void> initialize() async {
     try {
       _cameras = await availableCameras();

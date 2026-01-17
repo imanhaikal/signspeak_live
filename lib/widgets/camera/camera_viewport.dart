@@ -2,7 +2,10 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+// import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import '../../services/camera_service.dart';
+import '../../services/ml_service.dart';
+import '../../utils/image_utils.dart';
 import '../../theme/app_theme.dart';
 
 class CameraViewport extends StatefulWidget {
@@ -16,7 +19,9 @@ class CameraViewportState extends State<CameraViewport>
     with SingleTickerProviderStateMixin {
   late AnimationController _scanController;
   final CameraService _cameraService = CameraService();
+  final MLService _mlService = MLService();
   bool _isCameraInitialized = false;
+  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -36,6 +41,32 @@ class CameraViewportState extends State<CameraViewport>
         _isCameraInitialized =
             _cameraService.controller?.value.isInitialized ?? false;
       });
+      if (_isCameraInitialized) {
+        await _cameraService.controller?.startImageStream(_processImage);
+      }
+    }
+  }
+
+  Future<void> _processImage(CameraImage image) async {
+    if (_isProcessing) return;
+    _isProcessing = true;
+    try {
+      final cameraDescription = _cameraService.cameraDescription;
+      if (cameraDescription == null) return;
+
+      final inputImage = ImageUtils.convertCameraImageToInputImage(
+        image,
+        cameraDescription,
+      );
+
+      if (inputImage != null) {
+        final poses = await _mlService.processImage(inputImage);
+        debugPrint('Detected ${poses.length} poses');
+      }
+    } catch (e) {
+      debugPrint('Error processing image: $e');
+    } finally {
+      _isProcessing = false;
     }
   }
 
@@ -53,6 +84,7 @@ class CameraViewportState extends State<CameraViewport>
   void dispose() {
     _scanController.dispose();
     _cameraService.dispose();
+    _mlService.dispose();
     super.dispose();
   }
 
