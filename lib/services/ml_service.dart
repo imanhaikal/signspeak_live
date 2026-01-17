@@ -12,7 +12,13 @@ class MLService {
 
   PoseDetector? _poseDetector;
 
-  void initialize() {
+  void initialize({PoseDetector? poseDetector}) {
+    if (poseDetector != null) {
+      _poseDetector = poseDetector;
+      debugPrint('MLService initialized with injected PoseDetector');
+      return;
+    }
+
     // Initialize with stream mode as required for video feed processing
     final options = PoseDetectorOptions(mode: PoseDetectionMode.stream);
     _poseDetector = PoseDetector(options: options);
