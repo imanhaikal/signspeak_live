@@ -11,7 +11,7 @@ A Flutter recreation of a high-fidelity Sign Language Translation interface. Thi
 
 ## Features
 
-*   🚧 **Real-time Sign Language Recognition:** Leveraging ML Kit for pose detection to interpret sign language gestures. (**In Progress**)
+*   ✅ **Real-time Sign Language Recognition:** Leveraging ML Kit for pose detection to interpret sign language gestures. (**Integrated**)
 *   ✅ **Text-to-Speech (TTS):** Converts translated text into audible speech for seamless communication. (**Ready**)
 *   ✅ **Visual Debugging / Skeleton Overlay:** Includes a MediaPipe overlay simulation to demonstrate hand tracking capabilities. (**Active**)
 *   ✅ **Glassmorphic UI & Animations:** A modern, translucent UI design featuring animated typing indicators. (**Active**)
@@ -73,6 +73,8 @@ flutter test test/widgets/camera/camera_viewport_test.dart
 - **Camera Service**: Tests camera initialization, flipping, and error handling.
 - **Camera Viewport**: Tests camera preview rendering and overlay integration.
 - **Interaction Area**: Tests chat input, typing indicators, and message history.
+- **ML Service**: Tests pose detection initialization, image processing flow, and resource management.
+- **Image Utils**: Tests conversion of camera frames to ML Kit input format and rotation logic.
 
 ## Screenshots
 

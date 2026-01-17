@@ -26,7 +26,10 @@ The core functionality is encapsulated within dedicated service classes:
     *   **Initialization**: Requesting permissions and setting up the initial camera.
     *   **Controller Management**: Creating and disposing of the `CameraController`.
     *   **Switching**: Handling the logic to toggle between front and back cameras.
-*   **`MLService`**: Manages the loading of Machine Learning models (e.g., TFLite) and performing inference on video frames to detect signs.
+*   **`MLService`**: Manages the integration with Google ML Kit's Pose Detection. It handles:
+    *   **Initialization**: Setting up the `PoseDetector` in stream mode.
+    *   **Inference**: Processing video frames to detect and extract human pose landmarks (x, y, z coordinates).
+    *   **Resource Management**: Properly disposing of the detector to prevent memory leaks.
 *   **`TtsService`**: Handles Text-to-Speech synthesis, converting translated sign language text into audible speech.
 
 ### 3.2 Data Layer (Models)
@@ -79,6 +82,8 @@ We employ a comprehensive testing strategy to ensure reliability:
 *   **`CameraViewportTest`**: Widget tests verifying that the camera preview initializes and the flip method invokes the correct service calls.
 *   **`InteractionAreaTest`**: Widget tests ensuring the flip button and other controls trigger their respective callbacks.
 *   **`HomeScreenTest`**: Integration tests validating that the `InteractionArea` correctly triggers the `CameraViewport` flip action via the `GlobalKey`.
+*   **`MLServiceTest`**: Unit tests utilizing `mocktail` to verify singleton behavior, dependency injection, and proper delegation of image processing to the underlying `PoseDetector`.
+*   **`ImageUtilsTest`**: Unit tests verifying the accurate conversion of Flutter `CameraImage` formats to ML Kit `InputImage` formats, including rotation mapping and format handling.
 
 ## 7. Future Improvements
 To transition this MVP into a fully functional product, the following steps are prioritized:

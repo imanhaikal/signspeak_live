@@ -55,6 +55,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  camera_platform_interface: ^2.5.0
   objective_c: 9.1.0
   native_toolchain_c: 0.17.2
   network_image_mock: ^2.1.1
