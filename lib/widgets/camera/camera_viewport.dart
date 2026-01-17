@@ -1,18 +1,22 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../services/camera_service.dart';
 import '../../theme/app_theme.dart';
 
 class CameraViewport extends StatefulWidget {
   const CameraViewport({super.key});
 
   @override
-  State<CameraViewport> createState() => _CameraViewportState();
+  State<CameraViewport> createState() => CameraViewportState();
 }
 
-class _CameraViewportState extends State<CameraViewport>
+class CameraViewportState extends State<CameraViewport>
     with SingleTickerProviderStateMixin {
   late AnimationController _scanController;
+  final CameraService _cameraService = CameraService();
+  bool _isCameraInitialized = false;
 
   @override
   void initState() {
@@ -21,11 +25,34 @@ class _CameraViewportState extends State<CameraViewport>
       vsync: this,
       duration: const Duration(seconds: 3),
     )..repeat();
+
+    _initializeCamera();
+  }
+
+  Future<void> _initializeCamera() async {
+    await _cameraService.initialize();
+    if (mounted) {
+      setState(() {
+        _isCameraInitialized =
+            _cameraService.controller?.value.isInitialized ?? false;
+      });
+    }
+  }
+
+  Future<void> flipCamera() async {
+    await _cameraService.switchCamera();
+    if (mounted) {
+      setState(() {
+        _isCameraInitialized =
+            _cameraService.controller?.value.isInitialized ?? false;
+      });
+    }
   }
 
   @override
   void dispose() {
     _scanController.dispose();
+    _cameraService.dispose();
     super.dispose();
   }
 
@@ -33,25 +60,19 @@ class _CameraViewportState extends State<CameraViewport>
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // 1. Camera Feed (Placeholder)
+        // 1. Camera Feed
         Positioned.fill(
-          child: Image.network(
-            'https://images.unsplash.com/photo-1485217988980-11786ced9454?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
-            fit: BoxFit.cover,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Container(color: Colors.black);
-            },
-            errorBuilder: (context, error, stackTrace) => Container(
-              color: Colors.black,
-              child: const Center(
-                child: Text(
-                  'Camera Feed Offline',
-                  style: TextStyle(color: Colors.white54),
+          child: _isCameraInitialized && _cameraService.controller != null
+              ? CameraPreview(_cameraService.controller!)
+              : Container(
+                  color: Colors.black,
+                  child: const Center(
+                    child: Text(
+                      'Initializing Camera...',
+                      style: TextStyle(color: Colors.white54),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
         ),
 
         // 2. Vision Overlay (Skeleton)
@@ -67,10 +88,10 @@ class _CameraViewportState extends State<CameraViewport>
                 alignment: Alignment(0, 2 * _scanController.value - 1),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white.withOpacity(0.5),
+                        color: Colors.white.withValues(alpha: 0.5),
                         blurRadius: 10,
                         spreadRadius: 2,
                       ),
@@ -93,7 +114,10 @@ class _CameraViewportState extends State<CameraViewport>
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.black.withOpacity(0.8), Colors.transparent],
+                colors: [
+                  Colors.black.withValues(alpha: 0.8),
+                  Colors.transparent,
+                ],
               ),
             ),
             padding: const EdgeInsets.fromLTRB(
@@ -147,7 +171,7 @@ class _CameraViewportState extends State<CameraViewport>
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.4),
+              color: Colors.black.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: AppColors.glassBorder),
             ),
@@ -221,12 +245,12 @@ class SkeletonPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.6)
+      ..color = Colors.white.withValues(alpha: 0.6)
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
     final jointPaint = Paint()
-      ..color = Colors.white.withOpacity(0.8)
+      ..color = Colors.white.withValues(alpha: 0.8)
       ..style = PaintingStyle.fill;
 
     // Simulate a hand skeleton (Right hand roughly)
