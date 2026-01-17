@@ -3,7 +3,7 @@
 ## 1. Project Overview
 SignSpeak Live is a real-time Sign Language Translation application designed to bridge communication gaps between Deaf and hearing individuals. The application leverages on-device Machine Learning to interpret sign language gestures and converts them into spoken text, while simultaneously transcribing spoken words into text for the Deaf user.
 
-**Current Status:** Functional MVP Architecture (UI + Service Logic Stubs)
+**Current Status:** Phase 2: Vision Pipeline (Active Development)
 
 ## 2. Directory Structure
 The project adopts a feature-first and layered architecture to ensure scalability and maintainability:
@@ -39,7 +39,7 @@ The visual interface follows a composition model using a layered `Stack` layout 
 `HomeScreen`
  └── `Scaffold` (Void Black Background)
       └── `Stack`
-           ├── `CameraViewport` (Camera Feed + AR/Bounding Box Overlays)
+           ├── `CameraViewport` (Camera Feed + Skeleton Overlay/Visual Debugging)
            └── `InteractionArea` (Chat UI + Controls)
 
 ### 3.4 State Management
@@ -58,6 +58,7 @@ Handles the rendering of the live camera feed and AR overlays.
 
 ### 4.2 Interaction Area (`lib/widgets/interaction/`)
 Handles the communication interface between the user and the system.
+*   **`InteractionArea`**: The main container for the chat and controls.
 *   **Glassmorphism**: Uses `BackdropFilter` and semi-transparent colors to create a modern, unobtrusive overlay.
 *   **Chat UI**: Displays the bi-directional conversation (transcribed speech and translated signs).
 *   **Controls**: Microphone input, keyboard toggle, and **Camera Flip**. The flip action is delegated to the parent widget via a callback function, maintaining loose coupling.
@@ -82,7 +83,8 @@ We employ a comprehensive testing strategy to ensure reliability:
 ## 7. Future Improvements
 To transition this MVP into a fully functional product, the following steps are prioritized:
 
-1.  **Service Implementation**: Flesh out the `TODO` stubs in `CameraService`, `MLService`, and `TtsService` with actual logic (CameraX, TFLite/Mediapipe, Flutter TTS).
-2.  **MediaPipe/ML Kit Integration**: Fully integrate `google_mlkit_pose_detection` or equivalent for real-time skeletal tracking.
+1.  **Gemini Integration**: Connect the `MLService` output (landmarks) to the Gemini API for sign interpretation.
+2.  **Service Implementation**: Complete the implementation of `MLService` (Pose Detection) and `TtsService`.
 3.  **State Management**: Implement a reactive state management solution (e.g., Riverpod or Bloc) to connect the Services with the UI.
 4.  **Real-Time Backend**: Connect the `CameraService` to external APIs (like Gemini Multimodal) if cloud-based inference is required.
+
