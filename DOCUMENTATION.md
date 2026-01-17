@@ -22,9 +22,12 @@ The application is built on a clear separation of concerns, dividing responsibil
 
 ### 3.1 Logical Layer (Services)
 The core functionality is encapsulated within dedicated service classes:
-*   **`CameraService`**: Responsible for initializing the camera, handling permissions, and managing the video stream.
-*   **`MLService`**: Under active development. Currently initializing Pose Detection (MediaPipe/ML Kit) to extract skeletal landmarks from video frames.
-*   **`TtsService`**: (Stub) Designed to handle Text-to-Speech synthesis, converting translated sign language text into audible speech.
+*   **`CameraService`**: Manages the `CameraController` lifecycle. Responsibilities include:
+    *   **Initialization**: Requesting permissions and setting up the initial camera.
+    *   **Controller Management**: Creating and disposing of the `CameraController`.
+    *   **Switching**: Handling the logic to toggle between front and back cameras.
+*   **`MLService`**: Manages the loading of Machine Learning models (e.g., TFLite) and performing inference on video frames to detect signs.
+*   **`TtsService`**: Handles Text-to-Speech synthesis, converting translated sign language text into audible speech.
 
 ### 3.2 Data Layer (Models)
 *   **`RecognitionResult`**: A standardized model representing the output of the ML detection, containing the label, confidence score, and bounding box coordinates (`rect`).
@@ -39,20 +42,26 @@ The visual interface follows a composition model using a layered `Stack` layout 
            ├── `CameraViewport` (Camera Feed + Skeleton Overlay/Visual Debugging)
            └── `InteractionArea` (Chat UI + Controls)
 
+### 3.4 State Management
+The application uses a hybrid approach for state management suited for the MVP:
+*   **GlobalKey Pattern**: The `HomeScreen` uses a `GlobalKey<CameraViewportState>` to directly invoke the `flipCamera()` method on the `CameraViewport` when the flip button in `InteractionArea` is pressed. This avoids complex state management boilerplate for this specific hardware interaction.
+
 ## 4. Module Details
 
 ### 4.1 Camera Viewport (`lib/widgets/camera/`)
-Simulates or renders the computer vision layer.
-*   **`CameraViewport`**: Main container for the camera feed. Includes visual debugging features such as the `SkeletonPainter` for overlaying hand tracking landmarks.
-*   **`BoundingBoxOverlay`**: Visualizes detection results.
-*   **Status Indicators**: Visual cues for active ML processing, including the "GEMINI VISION ACTIVE" pulse animation and language detection badges.
+Handles the rendering of the live camera feed and AR overlays.
+*   **`CameraViewport`**:
+    *   **Live Preview**: Initializes the `CameraService` and renders the standard `CameraPreview` widget.
+    *   **Flip Logic**: Contains the `flipCamera()` method which triggers the service to switch cameras and updates the UI state.
+*   **`BoundingBoxOverlay`**: Visualizes detection results (e.g., hand tracking landmarks or bounding boxes) over the camera feed.
+*   **Status Indicators**: Visual cues for active ML processing (e.g., "GEMINI VISION ACTIVE" or model status).
 
 ### 4.2 Interaction Area (`lib/widgets/interaction/`)
 Handles the communication interface between the user and the system.
 *   **`InteractionArea`**: The main container for the chat and controls.
 *   **Glassmorphism**: Uses `BackdropFilter` and semi-transparent colors to create a modern, unobtrusive overlay.
 *   **Chat UI**: Displays the bi-directional conversation (transcribed speech and translated signs).
-*   **Controls**: Microphone input with pulse animations, keyboard toggle, and camera controls.
+*   **Controls**: Microphone input, keyboard toggle, and **Camera Flip**. The flip action is delegated to the parent widget via a callback function, maintaining loose coupling.
 
 ## 5. Theming (`lib/theme/app_theme.dart`)
 The app utilizes a specialized dark theme to enhance contrast and readability in various lighting conditions.
@@ -64,8 +73,15 @@ The app utilizes a specialized dark theme to enhance contrast and readability in
 *   **Typography**:
     *   **Inter**: Used for all text elements to ensure clean, modern legibility.
 
-## 6. Future Improvements
-Aligned with the project roadmap (Phase 3 & 4), the immediate next steps are:
+## 6. Testing Strategy
+We employ a comprehensive testing strategy to ensure reliability:
+*   **`CameraServiceTest`**: Unit tests for camera initialization, permission handling, and camera switching logic.
+*   **`CameraViewportTest`**: Widget tests verifying that the camera preview initializes and the flip method invokes the correct service calls.
+*   **`InteractionAreaTest`**: Widget tests ensuring the flip button and other controls trigger their respective callbacks.
+*   **`HomeScreenTest`**: Integration tests validating that the `InteractionArea` correctly triggers the `CameraViewport` flip action via the `GlobalKey`.
+
+## 7. Future Improvements
+To transition this MVP into a fully functional product, the following steps are prioritized:
 
 1.  **Gemini Integration**: Connect the `MLService` output (landmarks) to the Gemini API for sign interpretation.
 2.  **Service Implementation**: Complete the implementation of `MLService` (Pose Detection) and `TtsService`.

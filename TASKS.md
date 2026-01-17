@@ -34,10 +34,10 @@
 ## 👁️ Phase 2: "The Eye" - Vision Pipeline (Days 4-10)
 *Goal: Accurately track hands and visualize the skeleton.*
 
-- [ ] **Camera Preview**
+- [x] **Camera Preview**
     - [x] Implement `CameraViewport` widget structure (currently using placeholder).
-    - [ ] Handle camera permissions on Android/iOS manifest.
-    - [ ] Implement "Flip Camera" button logic.
+    - [x] Handle camera permissions on Android/iOS manifest.
+    - [x] Implement "Flip Camera" button logic.
 - [ ] **MediaPipe Integration**
     - [ ] Initialize `PoseDetector` / `HandPoseDetector`.
     - [ ] Create a Stream that processes camera frames.

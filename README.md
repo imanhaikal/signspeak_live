@@ -16,6 +16,8 @@ A Flutter recreation of a high-fidelity Sign Language Translation interface. Thi
 *   ✅ **Visual Debugging / Skeleton Overlay:** Includes a MediaPipe overlay simulation to demonstrate hand tracking capabilities. (**Active**)
 *   ✅ **Glassmorphic UI & Animations:** A modern, translucent UI design featuring animated typing indicators. (**Active**)
 *   **Custom Camera Interface:** Specialized camera implementation for optimal frame capture and processing.
+*   **Camera Controls:** Seamlessly switch between front and back cameras with the Flip Camera feature.
+*   **Immersive Camera Viewport:** Includes a MediaPipe overlay simulation to demonstrate hand tracking capabilities.
 *   **Real-time Scanning Animation:** Engaging visual feedback simulating active scanning processes.
 *   **Responsive Layout:** Fluidly adapts to different screen sizes, optimized for mobile devices.
 
@@ -60,6 +62,17 @@ This project includes unit and widget tests. To run them:
 ```bash
 flutter test
 ```
+
+For specific test files:
+```bash
+flutter test test/services/camera_service_test.dart
+flutter test test/widgets/camera/camera_viewport_test.dart
+```
+
+### Coverage
+- **Camera Service**: Tests camera initialization, flipping, and error handling.
+- **Camera Viewport**: Tests camera preview rendering and overlay integration.
+- **Interaction Area**: Tests chat input, typing indicators, and message history.
 
 ## Screenshots
 

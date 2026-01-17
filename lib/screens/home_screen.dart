@@ -8,12 +8,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<CameraViewportState> cameraKey = GlobalKey();
+
     return Scaffold(
       backgroundColor: AppColors.voidBlack,
       body: Stack(
         children: [
           // Layer 1 & 2: Camera Viewport (Video + Overlays + Header)
-          const Positioned.fill(child: CameraViewport()),
+          Positioned.fill(child: CameraViewport(key: cameraKey)),
 
           // Layer 3: Interaction Area
           Positioned(
@@ -21,7 +23,11 @@ class HomeScreen extends StatelessWidget {
             left: 0,
             right: 0,
             height: MediaQuery.of(context).size.height * 0.45,
-            child: const InteractionArea(),
+            child: InteractionArea(
+              onFlipCamera: () {
+                cameraKey.currentState?.flipCamera();
+              },
+            ),
           ),
         ],
       ),

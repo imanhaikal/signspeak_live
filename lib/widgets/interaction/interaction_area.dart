@@ -5,7 +5,9 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../theme/app_theme.dart';
 
 class InteractionArea extends StatefulWidget {
-  const InteractionArea({super.key});
+  final VoidCallback? onFlipCamera;
+
+  const InteractionArea({super.key, this.onFlipCamera});
 
   @override
   State<InteractionArea> createState() => _InteractionAreaState();
@@ -48,7 +50,7 @@ class _InteractionAreaState extends State<InteractionArea>
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: AppColors.mutedGray.withOpacity(0.3),
+              color: AppColors.mutedGray.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -194,7 +196,9 @@ class _InteractionAreaState extends State<InteractionArea>
                                     height: 80,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Colors.white.withOpacity(0.2),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.2,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -220,7 +224,9 @@ class _InteractionAreaState extends State<InteractionArea>
                     ),
 
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        widget.onFlipCamera?.call();
+                      },
                       icon: Icon(
                         PhosphorIcons.arrowsClockwise(),
                         color: Colors.white,
