@@ -84,5 +84,34 @@ void main() {
       expect(decoded[0]['x'], 100.0);
       expect(decoded[0]['y'], 200.0);
     });
+
+    test(
+      'landmarksToJson handles partially zero dimensions in imageSize gracefully',
+      () {
+        final landmarks = {
+          PoseLandmarkType.nose: PoseLandmark(
+            type: PoseLandmarkType.nose,
+            x: 100.0,
+            y: 200.0,
+            z: 10.0,
+            likelihood: 0.9,
+          ),
+        };
+
+        // Case 1: width is zero
+        var imageSize = const Size(0, 500);
+        var jsonString = LandmarkUtils.landmarksToJson(landmarks, imageSize);
+        var decoded = jsonDecode(jsonString);
+        expect(decoded[0]['x'], 100.0);
+        expect(decoded[0]['y'], 200.0);
+
+        // Case 2: height is zero
+        imageSize = const Size(1000, 0);
+        jsonString = LandmarkUtils.landmarksToJson(landmarks, imageSize);
+        decoded = jsonDecode(jsonString);
+        expect(decoded[0]['x'], 100.0);
+        expect(decoded[0]['y'], 200.0);
+      },
+    );
   });
 }
