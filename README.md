@@ -6,14 +6,14 @@ A Flutter recreation of a high-fidelity Sign Language Translation interface. Thi
 
 *   ✅ **Phase 1: Foundation** (Complete)
 *   ✅ **Phase 5: UI/UX** (Complete)
-*   🚧 **Phase 2: Vision Pipeline** (Active)
+*   ✅ **Phase 2: Vision Pipeline** (Complete)
 *   📅 **Phase 3: Gemini Integration** (Upcoming)
 
 ## Features
 
 *   ✅ **Real-time Sign Language Recognition:** Leveraging ML Kit for pose detection to interpret sign language gestures. (**Integrated**)
 *   ✅ **Text-to-Speech (TTS):** Converts translated text into audible speech for seamless communication. (**Ready**)
-*   ✅ **Visual Debugging / Skeleton Overlay:** Includes a MediaPipe overlay simulation to demonstrate hand tracking capabilities. (**Active**)
+*   ✅ **Visual Debugging / Skeleton Overlay:** Real-time pose landmark visualization ("Cyber-Noir" style) overlaid on the camera feed. (**Complete**)
 *   ✅ **Glassmorphic UI & Animations:** A modern, translucent UI design featuring animated typing indicators. (**Active**)
 *   **Custom Camera Interface:** Specialized camera implementation for optimal frame capture and processing.
 *   **Camera Controls:** Seamlessly switch between front and back cameras with the Flip Camera feature.
