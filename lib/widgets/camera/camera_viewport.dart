@@ -2,11 +2,12 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-// import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
+import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import '../../services/camera_service.dart';
 import '../../services/ml_service.dart';
 import '../../utils/image_utils.dart';
 import '../../theme/app_theme.dart';
+import 'pose_painter.dart';
 
 class CameraViewport extends StatefulWidget {
   const CameraViewport({super.key});
@@ -22,6 +23,12 @@ class CameraViewportState extends State<CameraViewport>
   final MLService _mlService = MLService();
   bool _isCameraInitialized = false;
   bool _isProcessing = false;
+
+  // Pose Detection State
+  List<Pose> _poses = [];
+  Size _inputImageSize = Size.zero;
+  InputImageRotation _rotation = InputImageRotation.rotation0deg;
+  CameraLensDirection _cameraLensDirection = CameraLensDirection.back;
 
   @override
   void initState() {
@@ -42,7 +49,11 @@ class CameraViewportState extends State<CameraViewport>
             _cameraService.controller?.value.isInitialized ?? false;
       });
       if (_isCameraInitialized) {
-        await _cameraService.controller?.startImageStream(_processImage);
+        try {
+          await _cameraService.controller?.startImageStream(_processImage);
+        } catch (e) {
+          debugPrint('Error starting image stream: $e');
+        }
       }
     }
   }
@@ -61,7 +72,16 @@ class CameraViewportState extends State<CameraViewport>
 
       if (inputImage != null) {
         final poses = await _mlService.processImage(inputImage);
-        debugPrint('Detected ${poses.length} poses');
+        if (mounted) {
+          setState(() {
+            _poses = poses;
+            _inputImageSize = inputImage.metadata?.size ?? Size.zero;
+            _rotation =
+                inputImage.metadata?.rotation ??
+                InputImageRotation.rotation0deg;
+            _cameraLensDirection = cameraDescription.lensDirection;
+          });
+        }
       }
     } catch (e) {
       debugPrint('Error processing image: $e');
@@ -71,12 +91,26 @@ class CameraViewportState extends State<CameraViewport>
   }
 
   Future<void> flipCamera() async {
+    setState(() {
+      _isCameraInitialized = false;
+      _poses = [];
+    });
+
     await _cameraService.switchCamera();
+
     if (mounted) {
       setState(() {
         _isCameraInitialized =
             _cameraService.controller?.value.isInitialized ?? false;
       });
+
+      if (_isCameraInitialized) {
+        try {
+          await _cameraService.controller?.startImageStream(_processImage);
+        } catch (e) {
+          debugPrint('Error restarting image stream: $e');
+        }
+      }
     }
   }
 
@@ -108,7 +142,16 @@ class CameraViewportState extends State<CameraViewport>
         ),
 
         // 2. Vision Overlay (Skeleton)
-        Positioned.fill(child: CustomPaint(painter: SkeletonPainter())),
+        Positioned.fill(
+          child: CustomPaint(
+            painter: PosePainter(
+              poses: _poses,
+              absoluteImageSize: _inputImageSize,
+              rotation: _rotation,
+              cameraLensDirection: _cameraLensDirection,
+            ),
+          ),
+        ),
 
         // 3. Scan Line Animation
         Positioned.fill(
@@ -271,120 +314,4 @@ class CameraViewportState extends State<CameraViewport>
       ],
     );
   }
-}
-
-class SkeletonPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.6)
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-
-    final jointPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.8)
-      ..style = PaintingStyle.fill;
-
-    // Simulate a hand skeleton (Right hand roughly)
-    final center = Offset(size.width * 0.7, size.height * 0.5);
-    final scale = size.width * 0.15;
-
-    // Wrist
-    final wrist = center + Offset(0, scale);
-
-    // Thumb
-    final thumbCMC = wrist + Offset(-scale * 0.3, -scale * 0.2);
-    final thumbMCP = thumbCMC + Offset(-scale * 0.2, -scale * 0.3);
-    final thumbIP = thumbMCP + Offset(-scale * 0.1, -scale * 0.3);
-    final thumbTip = thumbIP + Offset(-scale * 0.05, -scale * 0.3);
-
-    // Index
-    final indexMCP = wrist + Offset(-scale * 0.1, -scale * 0.5);
-    final indexPIP = indexMCP + Offset(-scale * 0.05, -scale * 0.4);
-    final indexDIP = indexPIP + Offset(-scale * 0.02, -scale * 0.3);
-    final indexTip = indexDIP + Offset(0, -scale * 0.3);
-
-    // Middle
-    final middleMCP = wrist + Offset(scale * 0.1, -scale * 0.55);
-    final middlePIP = middleMCP + Offset(scale * 0.05, -scale * 0.45);
-    final middleDIP = middlePIP + Offset(scale * 0.02, -scale * 0.35);
-    final middleTip = middleDIP + Offset(0, -scale * 0.35);
-
-    // Ring
-    final ringMCP = wrist + Offset(scale * 0.3, -scale * 0.5);
-    final ringPIP = ringMCP + Offset(scale * 0.15, -scale * 0.4);
-    final ringDIP = ringPIP + Offset(scale * 0.1, -scale * 0.3);
-    final ringTip = ringDIP + Offset(scale * 0.05, -scale * 0.3);
-
-    // Pinky
-    final pinkyMCP = wrist + Offset(scale * 0.45, -scale * 0.4);
-    final pinkyPIP = pinkyMCP + Offset(scale * 0.2, -scale * 0.3);
-    final pinkyDIP = pinkyPIP + Offset(scale * 0.1, -scale * 0.2);
-    final pinkyTip = pinkyDIP + Offset(scale * 0.05, -scale * 0.2);
-
-    final points = [
-      wrist,
-      thumbCMC,
-      thumbMCP,
-      thumbIP,
-      thumbTip,
-      indexMCP,
-      indexPIP,
-      indexDIP,
-      indexTip,
-      middleMCP,
-      middlePIP,
-      middleDIP,
-      middleTip,
-      ringMCP,
-      ringPIP,
-      ringDIP,
-      ringTip,
-      pinkyMCP,
-      pinkyPIP,
-      pinkyDIP,
-      pinkyTip,
-    ];
-
-    // Draw connections
-    // Thumb
-    canvas.drawLine(wrist, thumbCMC, paint);
-    canvas.drawLine(thumbCMC, thumbMCP, paint);
-    canvas.drawLine(thumbMCP, thumbIP, paint);
-    canvas.drawLine(thumbIP, thumbTip, paint);
-
-    // Fingers
-    canvas.drawLine(wrist, indexMCP, paint);
-    canvas.drawLine(wrist, middleMCP, paint);
-    canvas.drawLine(wrist, ringMCP, paint);
-    canvas.drawLine(wrist, pinkyMCP, paint);
-
-    // Index
-    canvas.drawLine(indexMCP, indexPIP, paint);
-    canvas.drawLine(indexPIP, indexDIP, paint);
-    canvas.drawLine(indexDIP, indexTip, paint);
-
-    // Middle
-    canvas.drawLine(middleMCP, middlePIP, paint);
-    canvas.drawLine(middlePIP, middleDIP, paint);
-    canvas.drawLine(middleDIP, middleTip, paint);
-
-    // Ring
-    canvas.drawLine(ringMCP, ringPIP, paint);
-    canvas.drawLine(ringPIP, ringDIP, paint);
-    canvas.drawLine(ringDIP, ringTip, paint);
-
-    // Pinky
-    canvas.drawLine(pinkyMCP, pinkyPIP, paint);
-    canvas.drawLine(pinkyPIP, pinkyDIP, paint);
-    canvas.drawLine(pinkyDIP, pinkyTip, paint);
-
-    // Draw joints
-    for (var point in points) {
-      canvas.drawCircle(point, 4, jointPaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

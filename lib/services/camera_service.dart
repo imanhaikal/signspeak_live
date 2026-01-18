@@ -47,7 +47,9 @@ class CameraService {
       camera,
       ResolutionPreset.high,
       enableAudio: false, // We use a separate mic button for STT
-      imageFormatGroup: ImageFormatGroup.yuv420,
+      imageFormatGroup: defaultTargetPlatform == TargetPlatform.android
+          ? ImageFormatGroup.nv21
+          : ImageFormatGroup.bgra8888,
     );
 
     try {
