@@ -14,7 +14,7 @@ The project adopts a feature-first and layered architecture to ensure scalabilit
     *   `screens/`: High-level screen containers (e.g., `HomeScreen`).
     *   `services/`: Core business logic and external integrations (`CameraService`, `MLService`, `TtsService`).
     *   `theme/`: Application design system and styling.
-    *   `utils/`: Helper functions (e.g., `image_utils.dart`).
+    *   `utils/`: Helper functions (e.g., `image_utils.dart`, `landmark_utils.dart`).
     *   `widgets/`: Reusable UI components organized by domain (`camera`, `interaction`, `common`).
 
 ## 3. Architecture
@@ -29,6 +29,7 @@ The core functionality is encapsulated within dedicated service classes:
 *   **`MLService`**: Manages the integration with Google ML Kit's Pose Detection. It handles:
     *   **Initialization**: Setting up the `PoseDetector` in stream mode.
     *   **Inference**: Processing video frames to detect and extract human pose landmarks (x, y, z coordinates).
+    *   **Data Formatting**: utilizing `LandmarkUtils` to normalize and serialize landmarks for API consumption.
     *   **Resource Management**: Properly disposing of the detector to prevent memory leaks.
 *   **`TtsService`**: Handles Text-to-Speech synthesis, converting translated sign language text into audible speech.
 
@@ -66,6 +67,15 @@ Handles the communication interface between the user and the system.
 *   **Chat UI**: Displays the bi-directional conversation (transcribed speech and translated signs).
 *   **Controls**: Microphone input, keyboard toggle, and **Camera Flip**. The flip action is delegated to the parent widget via a callback function, maintaining loose coupling.
 
+### 4.3 Utilities (`lib/utils/`)
+Helper classes to streamline complex operations and ensure data consistency.
+*   **`LandmarkUtils`**:
+    *   **Normalization**: Converts absolute pixel coordinates (x, y) into relative coordinates (0.0 - 1.0) based on the input image resolution. This ensures the model receives resolution-independent data.
+    *   **Serialization**: Transforms the `PoseLandmark` map into a standardized JSON string structure containing `type`, `x`, `y`, `z`, and `likelihood` for efficient API transmission.
+*   **`ImageUtils`**:
+    *   **Format Conversion**: Converts platform-specific `CameraImage` formats (YUV_420_888 on Android, BGRA8888 on iOS) into ML Kit's `InputImage` format.
+    *   **Rotation Handling**: Maps device sensor orientation to ML Kit's `InputImageRotation`.
+
 ## 5. Theming (`lib/theme/app_theme.dart`)
 The app utilizes a specialized dark theme to enhance contrast and readability in various lighting conditions.
 
@@ -84,6 +94,7 @@ We employ a comprehensive testing strategy to ensure reliability:
 *   **`HomeScreenTest`**: Integration tests validating that the `InteractionArea` correctly triggers the `CameraViewport` flip action via the `GlobalKey`.
 *   **`PosePainterTest`**: Widget tests validating the custom painting logic, ensuring skeletal landmarks are drawn correctly based on input poses.
 *   **`ImageUtilsTest`**: Unit tests verifying the accurate conversion of Flutter `CameraImage` formats to ML Kit `InputImage` formats, including rotation mapping and format handling.
+*   **`LandmarkUtilsTest`**: Unit tests verifying the correct normalization and JSON serialization of pose landmarks, ensuring data integrity for API requests.
 
 ## 7. Future Improvements
 To transition this MVP into a fully functional product, the following steps are prioritized:

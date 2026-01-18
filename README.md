@@ -75,6 +75,7 @@ flutter test test/widgets/camera/camera_viewport_test.dart
 - **Interaction Area**: Tests chat input, typing indicators, and message history.
 - **ML Service**: Tests pose detection initialization, image processing flow, and resource management.
 - **Image Utils**: Tests conversion of camera frames to ML Kit input format and rotation logic.
+- **Landmark Utils**: Tests conversion of pose landmarks to normalized JSON format for Gemini integration.
 
 ## Screenshots
 
