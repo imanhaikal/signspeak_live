@@ -1,0 +1,23 @@
+[
+  { "type": "WRIST", "x": 0.50, "y": 0.90, "z": 0.00, "likelihood": 0.99 },
+  { "type": "THUMB_CMC", "x": 0.55, "y": 0.85, "z": -0.02, "likelihood": 0.98 },
+  { "type": "THUMB_MCP", "x": 0.60, "y": 0.75, "z": -0.03, "likelihood": 0.98 },
+  { "type": "THUMB_IP", "x": 0.63, "y": 0.65, "z": -0.04, "likelihood": 0.98 },
+  { "type": "THUMB_TIP", "x": 0.65, "y": 0.55, "z": -0.05, "likelihood": 0.99 },
+  { "type": "INDEX_FINGER_MCP", "x": 0.53, "y": 0.60, "z": -0.02, "likelihood": 0.99 },
+  { "type": "INDEX_FINGER_PIP", "x": 0.54, "y": 0.45, "z": -0.03, "likelihood": 0.99 },
+  { "type": "INDEX_FINGER_DIP", "x": 0.55, "y": 0.35, "z": -0.04, "likelihood": 0.99 },
+  { "type": "INDEX_FINGER_TIP", "x": 0.55, "y": 0.25, "z": -0.05, "likelihood": 0.99 },
+  { "type": "MIDDLE_FINGER_MCP", "x": 0.50, "y": 0.60, "z": -0.02, "likelihood": 0.99 },
+  { "type": "MIDDLE_FINGER_PIP", "x": 0.50, "y": 0.44, "z": -0.03, "likelihood": 0.99 },
+  { "type": "MIDDLE_FINGER_DIP", "x": 0.50, "y": 0.34, "z": -0.04, "likelihood": 0.99 },
+  { "type": "MIDDLE_FINGER_TIP", "x": 0.50, "y": 0.24, "z": -0.05, "likelihood": 0.99 },
+  { "type": "RING_FINGER_MCP", "x": 0.47, "y": 0.61, "z": -0.02, "likelihood": 0.99 },
+  { "type": "RING_FINGER_PIP", "x": 0.46, "y": 0.45, "z": -0.03, "likelihood": 0.99 },
+  { "type": "RING_FINGER_DIP", "x": 0.45, "y": 0.35, "z": -0.04, "likelihood": 0.99 },
+  { "type": "RING_FINGER_TIP", "x": 0.45, "y": 0.25, "z": -0.05, "likelihood": 0.99 },
+  { "type": "PINKY_MCP", "x": 0.44, "y": 0.62, "z": -0.02, "likelihood": 0.99 },
+  { "type": "PINKY_PIP", "x": 0.42, "y": 0.48, "z": -0.03, "likelihood": 0.99 },
+  { "type": "PINKY_DIP", "x": 0.41, "y": 0.40, "z": -0.04, "likelihood": 0.99 },
+  { "type": "PINKY_TIP", "x": 0.40, "y": 0.32, "z": -0.05, "likelihood": 0.99 }
+]
