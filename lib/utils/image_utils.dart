@@ -36,8 +36,14 @@ class ImageUtils {
       rawFormat as int,
     );
 
+    // Force map YUV_420_888 (35) to NV21 on Android, as ML Kit might prefer NV21
+    // or to ensure consistency with the requirement.
+    if (isAndroid && rawFormat == 35) {
+      inputImageFormat = InputImageFormat.nv21;
+    }
+
     if (inputImageFormat == null) {
-      if (Platform.isAndroid) {
+      if (isAndroid) {
         // YUV_420_888 = 35
         if (rawFormat == 35) {
           inputImageFormat = InputImageFormat.nv21;
@@ -45,7 +51,7 @@ class ImageUtils {
           // NV21 = 17
           inputImageFormat = InputImageFormat.nv21;
         }
-      } else if (Platform.isIOS) {
+      } else if (isIOS) {
         // BGRA8888 = 1111970369
         if (rawFormat == 1111970369) {
           inputImageFormat = InputImageFormat.bgra8888;
@@ -64,6 +70,16 @@ class ImageUtils {
 
     return InputImage.fromBytes(bytes: bytes, metadata: inputImageData);
   }
+
+  @visibleForTesting
+  static bool? isAndroidOverride;
+
+  static bool get isAndroid => isAndroidOverride ?? Platform.isAndroid;
+
+  @visibleForTesting
+  static bool? isIOSOverride;
+
+  static bool get isIOS => isIOSOverride ?? Platform.isIOS;
 
   static InputImageRotation? _rotationIntToImageRotation(int rotation) {
     switch (rotation) {

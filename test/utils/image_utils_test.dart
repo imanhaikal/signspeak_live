@@ -90,9 +90,45 @@ void main() {
       },
     );
 
+    test('convertCameraImageToInputImage handles YUV_420_888 on Android', () {
+      ImageUtils.isAndroidOverride = true;
+      ImageUtils.isIOSOverride = false;
+      when(() => mockImageFormat.raw).thenReturn(35); // YUV_420_888
+
+      final inputImage = ImageUtils.convertCameraImageToInputImage(
+        mockCameraImage,
+        cameraDescription,
+      );
+
+      expect(inputImage, isNotNull);
+      expect(
+        inputImage!.metadata!.format,
+        equals(InputImageFormat.nv21), // Now it should be forced to nv21
+      );
+
+      ImageUtils.isAndroidOverride = null; // Reset
+    });
+
+    test('convertCameraImageToInputImage handles BGRA8888 on iOS', () {
+      ImageUtils.isAndroidOverride = false;
+      ImageUtils.isIOSOverride = true;
+      when(() => mockImageFormat.raw).thenReturn(1111970369); // BGRA8888
+
+      final inputImage = ImageUtils.convertCameraImageToInputImage(
+        mockCameraImage,
+        cameraDescription,
+      );
+
+      expect(inputImage, isNotNull);
+      expect(inputImage!.metadata!.format, equals(InputImageFormat.bgra8888));
+
+      ImageUtils.isIOSOverride = null; // Reset
+    });
+
     test(
       'convertCameraImageToInputImage returns null for unsupported format',
       () {
+        ImageUtils.isAndroidOverride = true;
         when(() => mockImageFormat.raw).thenReturn(-1); // Unsupported format
 
         final inputImage = ImageUtils.convertCameraImageToInputImage(
@@ -101,6 +137,7 @@ void main() {
         );
 
         expect(inputImage, isNull);
+        ImageUtils.isAndroidOverride = null;
       },
     );
 

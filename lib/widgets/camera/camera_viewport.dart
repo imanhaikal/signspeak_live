@@ -10,7 +10,10 @@ import '../../theme/app_theme.dart';
 import 'pose_painter.dart';
 
 class CameraViewport extends StatefulWidget {
-  const CameraViewport({super.key});
+  final CameraService? cameraService;
+  final MLService? mlService;
+
+  const CameraViewport({super.key, this.cameraService, this.mlService});
 
   @override
   State<CameraViewport> createState() => CameraViewportState();
@@ -19,8 +22,8 @@ class CameraViewport extends StatefulWidget {
 class CameraViewportState extends State<CameraViewport>
     with SingleTickerProviderStateMixin {
   late AnimationController _scanController;
-  final CameraService _cameraService = CameraService();
-  final MLService _mlService = MLService();
+  late final CameraService _cameraService;
+  late final MLService _mlService;
   bool _isCameraInitialized = false;
   bool _isProcessing = false;
 
@@ -33,6 +36,8 @@ class CameraViewportState extends State<CameraViewport>
   @override
   void initState() {
     super.initState();
+    _cameraService = widget.cameraService ?? CameraService();
+    _mlService = widget.mlService ?? MLService();
     _scanController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
