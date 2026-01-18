@@ -42,10 +42,10 @@
     - [x] Initialize `PoseDetector` / `HandPoseDetector`.
     - [x] Create a Stream that processes camera frames.
     - [x] **Critical:** Extract `PoseLandmark` data (x, y, z coordinates).
-- [ ] **Visual Debugging (The Overlay)**
-    - [ ] Create `CustomPainter` to draw lines between landmarks.
-    - [ ] Verify that the skeleton aligns with the hand on screen.
-    - [ ] *Optimization:* Ensure frame rate doesn't drop below 30fps.
+- [x] **Visual Debugging (The Overlay)**
+    - [x] Create `CustomPainter` to draw lines between landmarks.
+    - [x] Verify that the skeleton aligns with the hand on screen.
+    - [x] *Optimization:* Ensure frame rate doesn't drop below 30fps.
 
 ---
 

@@ -56,7 +56,7 @@ Handles the rendering of the live camera feed and AR overlays.
 *   **`CameraViewport`**:
     *   **Live Preview**: Initializes the `CameraService` and renders the standard `CameraPreview` widget.
     *   **Flip Logic**: Contains the `flipCamera()` method which triggers the service to switch cameras and updates the UI state.
-*   **`BoundingBoxOverlay`**: Visualizes detection results (e.g., hand tracking landmarks or bounding boxes) over the camera feed.
+*   **`PosePainter`**: Visualizes detection results (e.g., skeletal landmarks and connections) over the camera feed using a custom painter. Replaces the placeholder `BoundingBoxOverlay`.
 *   **Status Indicators**: Visual cues for active ML processing (e.g., "GEMINI VISION ACTIVE" or model status).
 
 ### 4.2 Interaction Area (`lib/widgets/interaction/`)
@@ -82,7 +82,7 @@ We employ a comprehensive testing strategy to ensure reliability:
 *   **`CameraViewportTest`**: Widget tests verifying that the camera preview initializes and the flip method invokes the correct service calls.
 *   **`InteractionAreaTest`**: Widget tests ensuring the flip button and other controls trigger their respective callbacks.
 *   **`HomeScreenTest`**: Integration tests validating that the `InteractionArea` correctly triggers the `CameraViewport` flip action via the `GlobalKey`.
-*   **`MLServiceTest`**: Unit tests utilizing `mocktail` to verify singleton behavior, dependency injection, and proper delegation of image processing to the underlying `PoseDetector`.
+*   **`PosePainterTest`**: Widget tests validating the custom painting logic, ensuring skeletal landmarks are drawn correctly based on input poses.
 *   **`ImageUtilsTest`**: Unit tests verifying the accurate conversion of Flutter `CameraImage` formats to ML Kit `InputImage` formats, including rotation mapping and format handling.
 
 ## 7. Future Improvements
