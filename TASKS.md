@@ -52,9 +52,9 @@
 ## 🧠 Phase 3: "The Brain" - Gemini Integration (Days 11-17)
 *Goal: Turn coordinate data into meaningful text.*
 
-- [ ] **Data Formatting**
-    - [ ] Write a utility function `landmarksToJson()` to convert the stream of coordinates into a clean JSON string.
-    - [ ] *Optimization:* Normalize coordinates (0.0 to 1.0) so hand distance doesn't affect accuracy.
+- [x] **Data Formatting**
+    - [x] Write a utility function `landmarksToJson()` to convert the stream of coordinates into a clean JSON string.
+    - [x] *Optimization:* Normalize coordinates (0.0 to 1.0) so hand distance doesn't affect accuracy.
 - [ ] **Prompt Engineering**
     - [ ] Design the System Instruction: "You are a BIM interpreter..."
     - [ ] Test prompts in Google AI Studio first with dummy coordinate data.
