@@ -35,7 +35,7 @@ void main() {
       ),
     );
     registerFallbackValue(ResolutionPreset.high);
-    registerFallbackValue(ImageFormatGroup.yuv420);
+    registerFallbackValue(ImageFormatGroup.nv21);
     registerFallbackValue(
       MediaSettings(
         resolutionPreset: ResolutionPreset.high,
@@ -97,7 +97,7 @@ void main() {
       verify(
         () => mockPlatform.initializeCamera(
           1,
-          imageFormatGroup: ImageFormatGroup.yuv420,
+          imageFormatGroup: ImageFormatGroup.nv21,
         ),
       ).called(1);
       expect(cameraService.controller, isNotNull);
