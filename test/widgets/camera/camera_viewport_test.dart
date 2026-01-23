@@ -7,7 +7,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:signspeak_live/services/camera_service.dart';
 import 'package:signspeak_live/services/ml_service.dart';
 import 'package:signspeak_live/widgets/camera/camera_viewport.dart';
-import 'package:signspeak_live/widgets/camera/pose_painter.dart';
 
 // Mocks
 class MockCameraService extends Mock implements CameraService {}
