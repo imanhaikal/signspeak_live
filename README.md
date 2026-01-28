@@ -7,7 +7,7 @@ A Flutter recreation of a high-fidelity Sign Language Translation interface. Thi
 *   ✅ **Phase 1: Foundation** (Complete)
 *   ✅ **Phase 5: UI/UX** (Complete)
 *   ✅ **Phase 2: Vision Pipeline** (Complete)
-*   📅 **Phase 3: Gemini Integration** (Upcoming)
+*   🚀 **Phase 3: Gemini Integration** (Prototype Ready)
 
 ## Features
 
@@ -45,12 +45,22 @@ The project follows a feature-first and layered architecture:
 
 Ensure you have the Flutter SDK installed and set up.
 
-1.  **Install Dependencies**
+1.  **Configure Environment Variables**
+    *   Copy `.env.example` to a new file named `.env` in the project root:
+        ```bash
+        cp .env.example .env
+        ```
+    *   Open `.env` and add your Gemini API key:
+        ```
+        GEMINI_API_KEY=your_actual_api_key_here
+        ```
+
+2.  **Install Dependencies**
     ```bash
     flutter pub get
     ```
 
-2.  **Run the Application**
+3.  **Run the Application**
     ```bash
     flutter run
     ```
