@@ -77,6 +77,12 @@ For specific test files:
 ```bash
 flutter test test/services/camera_service_test.dart
 flutter test test/widgets/camera/camera_viewport_test.dart
+flutter test test/services/gemini_service_test.dart
+```
+
+To run the Gemini integration test (requires a valid `GEMINI_API_KEY` in `.env`):
+```bash
+flutter test test/integration/gemini_service_integration_test.dart
 ```
 
 ### Coverage
@@ -84,6 +90,7 @@ flutter test test/widgets/camera/camera_viewport_test.dart
 - **Camera Viewport**: Tests camera preview rendering and overlay integration.
 - **Interaction Area**: Tests chat input, typing indicators, and message history.
 - **ML Service**: Tests pose detection initialization, image processing flow, and resource management.
+- **Gemini Service**: Tests API initialization, model configuration, and message generation.
 - **Image Utils**: Tests conversion of camera frames to ML Kit input format and rotation logic.
 - **Landmark Utils**: Tests conversion of pose landmarks to normalized JSON format for Gemini integration.
 
