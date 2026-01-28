@@ -58,10 +58,10 @@
 - [x] **Prompt Engineering**
     - [x] Design the System Instruction: "You are a BIM interpreter..."
     - [x] Test prompts in Google AI Studio first with dummy coordinate data.
-- [ ] **API Connection**
-    - [ ] Connect `google_generative_ai` package.
-    - [ ] Send the JSON payload to Gemini 3 Flash.
-    - [ ] Handle the response (Parsing the String).
+- [x] **API Connection**
+    - [x] Connect `google_generative_ai` package.
+    - [x] Send the JSON payload to Gemini 3 Flash.
+    - [x] Handle the response (Parsing the String).
 - [ ] **Latency Management**
     - [ ] Implement a "Debounce" or "Buffer" (only send data every 1-2 seconds or when movement stops).
 
