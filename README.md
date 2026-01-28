@@ -7,7 +7,7 @@ A Flutter recreation of a high-fidelity Sign Language Translation interface. Thi
 *   ✅ **Phase 1: Foundation** (Complete)
 *   ✅ **Phase 5: UI/UX** (Complete)
 *   ✅ **Phase 2: Vision Pipeline** (Complete)
-*   📅 **Phase 3: Gemini Integration** (Upcoming)
+*   🚀 **Phase 3: Gemini Integration** (Prototype Ready)
 
 ## Features
 
@@ -45,12 +45,22 @@ The project follows a feature-first and layered architecture:
 
 Ensure you have the Flutter SDK installed and set up.
 
-1.  **Install Dependencies**
+1.  **Configure Environment Variables**
+    *   Copy `.env.example` to a new file named `.env` in the project root:
+        ```bash
+        cp .env.example .env
+        ```
+    *   Open `.env` and add your Gemini API key:
+        ```
+        GEMINI_API_KEY=your_actual_api_key_here
+        ```
+
+2.  **Install Dependencies**
     ```bash
     flutter pub get
     ```
 
-2.  **Run the Application**
+3.  **Run the Application**
     ```bash
     flutter run
     ```
@@ -67,6 +77,12 @@ For specific test files:
 ```bash
 flutter test test/services/camera_service_test.dart
 flutter test test/widgets/camera/camera_viewport_test.dart
+flutter test test/services/gemini_service_test.dart
+```
+
+To run the Gemini integration test (requires a valid `GEMINI_API_KEY` in `.env`):
+```bash
+flutter test test/integration/gemini_service_integration_test.dart
 ```
 
 ### Coverage
@@ -74,6 +90,7 @@ flutter test test/widgets/camera/camera_viewport_test.dart
 - **Camera Viewport**: Tests camera preview rendering and overlay integration.
 - **Interaction Area**: Tests chat input, typing indicators, and message history.
 - **ML Service**: Tests pose detection initialization, image processing flow, and resource management.
+- **Gemini Service**: Tests API initialization, model configuration, and message generation.
 - **Image Utils**: Tests conversion of camera frames to ML Kit input format and rotation logic.
 - **Landmark Utils**: Tests conversion of pose landmarks to normalized JSON format for Gemini integration.
 
