@@ -9,6 +9,7 @@ import 'package:signspeak_live/screens/home_screen.dart';
 import 'package:signspeak_live/services/camera_service.dart';
 import 'package:signspeak_live/widgets/camera/camera_viewport.dart';
 import 'package:signspeak_live/widgets/interaction/interaction_area.dart';
+import '../helpers/mock_gemini_service.dart';
 
 // Reuse mocks
 class MockCameraService extends Mock implements CameraService {}
@@ -18,10 +19,17 @@ class MockCameraController extends Mock implements CameraController {}
 void main() {
   late MockCameraService mockCameraService;
   late MockCameraController mockCameraController;
+  late MockGeminiService mockGeminiService;
 
   setUp(() {
     mockCameraService = MockCameraService();
     mockCameraController = MockCameraController();
+    mockGeminiService = MockGeminiService();
+
+    when(() => mockGeminiService.initialize()).thenAnswer((_) async {});
+    when(
+      () => mockGeminiService.interpretSign(any()),
+    ).thenAnswer((_) async => '');
 
     // Default stubs
     when(() => mockCameraService.initialize()).thenAnswer((_) async {});
@@ -57,7 +65,9 @@ void main() {
     WidgetTester tester,
   ) async {
     await mockNetworkImagesFor(() async {
-      await tester.pumpWidget(const MaterialApp(home: HomeScreen()));
+      await tester.pumpWidget(
+        MaterialApp(home: HomeScreen(geminiService: mockGeminiService)),
+      );
 
       await tester.pump(const Duration(milliseconds: 500));
 

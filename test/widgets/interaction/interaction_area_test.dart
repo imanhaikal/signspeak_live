@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:signspeak_live/models/chat_message.dart';
 import 'package:signspeak_live/widgets/interaction/interaction_area.dart';
 
 void main() {
@@ -8,6 +9,20 @@ void main() {
     WidgetTester tester,
   ) async {
     bool flipCallbackTriggered = false;
+    final translationNotifier = ValueNotifier<String>('');
+
+    final messages = [
+      ChatMessage(
+        text: 'renew my identification card',
+        isUser: true,
+        timestamp: DateTime.now(),
+      ),
+      ChatMessage(
+        text: 'I can help with that',
+        isUser: false,
+        timestamp: DateTime.now(),
+      ),
+    ];
 
     // Wrap in MaterialApp to provide necessary Material context
     await tester.pumpWidget(
@@ -17,6 +32,8 @@ void main() {
             onFlipCamera: () {
               flipCallbackTriggered = true;
             },
+            messages: messages,
+            translationNotifier: translationNotifier,
           ),
         ),
       ),

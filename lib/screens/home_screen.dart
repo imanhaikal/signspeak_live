@@ -9,8 +9,20 @@ import '../utils/landmark_utils.dart';
 import '../widgets/camera/camera_viewport.dart';
 import '../widgets/interaction/interaction_area.dart';
 
+import 'package:google_generative_ai/google_generative_ai.dart';
+
+typedef CameraViewportBuilder =
+    Widget Function(
+      Key? key,
+      void Function(List<Pose>, Size, InputImageRotation, CameraLensDirection)
+      onPoseDetected,
+    );
+
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final GeminiService? geminiService;
+  final CameraViewportBuilder? cameraViewportBuilder;
+
+  const HomeScreen({super.key, this.geminiService, this.cameraViewportBuilder});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -18,7 +30,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<CameraViewportState> _cameraKey = GlobalKey();
-  final GeminiService _geminiService = GeminiService();
+  late final GeminiService _geminiService;
 
   // State
   final List<ChatMessage> _messages = [];
@@ -34,11 +46,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _geminiService = widget.geminiService ?? GeminiService();
     _initializeServices();
     _startApiTimer();
   }
 
   Future<void> _initializeServices() async {
+    // If injected, it might be already initialized or mocked, but calling initialize is safe if handled in service
     await _geminiService.initialize();
   }
 
@@ -123,10 +137,15 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           // Layer 1 & 2: Camera Viewport (Video + Overlays + Header)
           Positioned.fill(
-            child: CameraViewport(
-              key: _cameraKey,
-              onPoseDetected: _onPoseDetected,
-            ),
+            child:
+                widget.cameraViewportBuilder?.call(
+                  _cameraKey,
+                  _onPoseDetected,
+                ) ??
+                CameraViewport(
+                  key: _cameraKey,
+                  onPoseDetected: _onPoseDetected,
+                ),
           ),
 
           // Layer 3: Interaction Area
