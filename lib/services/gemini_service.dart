@@ -26,7 +26,7 @@ class GeminiService {
 
   Future<void> initialize() async {
     if (_injectedClient != null) {
-      _client = _injectedClient!;
+      _client = _injectedClient;
       return;
     }
 
