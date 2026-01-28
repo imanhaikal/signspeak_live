@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:signspeak_live/services/gemini_service.dart';
 

@@ -12,8 +12,15 @@ import 'pose_painter.dart';
 class CameraViewport extends StatefulWidget {
   final CameraService? cameraService;
   final MLService? mlService;
+  final Function(List<Pose>, Size, InputImageRotation, CameraLensDirection)?
+  onPoseDetected;
 
-  const CameraViewport({super.key, this.cameraService, this.mlService});
+  const CameraViewport({
+    super.key,
+    this.cameraService,
+    this.mlService,
+    this.onPoseDetected,
+  });
 
   @override
   State<CameraViewport> createState() => CameraViewportState();
@@ -26,6 +33,7 @@ class CameraViewportState extends State<CameraViewport>
   late final MLService _mlService;
   bool _isCameraInitialized = false;
   bool _isProcessing = false;
+  DateTime? _lastProcessingTime;
 
   // Pose Detection State
   List<Pose> _poses = [];
@@ -65,6 +73,15 @@ class CameraViewportState extends State<CameraViewport>
 
   Future<void> _processImage(CameraImage image) async {
     if (_isProcessing) return;
+
+    // Throttle to ~10 FPS (100ms interval)
+    if (_lastProcessingTime != null &&
+        DateTime.now().difference(_lastProcessingTime!) <
+            const Duration(milliseconds: 100)) {
+      return;
+    }
+    _lastProcessingTime = DateTime.now();
+
     _isProcessing = true;
     try {
       final cameraDescription = _cameraService.cameraDescription;
@@ -78,13 +95,23 @@ class CameraViewportState extends State<CameraViewport>
       if (inputImage != null) {
         final poses = await _mlService.processImage(inputImage);
         if (mounted) {
+          final imageSize = inputImage.metadata?.size ?? Size.zero;
+          final rotation =
+              inputImage.metadata?.rotation ?? InputImageRotation.rotation0deg;
+          final cameraLensDirection = cameraDescription.lensDirection;
+
+          widget.onPoseDetected?.call(
+            poses,
+            imageSize,
+            rotation,
+            cameraLensDirection,
+          );
+
           setState(() {
             _poses = poses;
-            _inputImageSize = inputImage.metadata?.size ?? Size.zero;
-            _rotation =
-                inputImage.metadata?.rotation ??
-                InputImageRotation.rotation0deg;
-            _cameraLensDirection = cameraDescription.lensDirection;
+            _inputImageSize = imageSize;
+            _rotation = rotation;
+            _cameraLensDirection = cameraLensDirection;
           });
         }
       }

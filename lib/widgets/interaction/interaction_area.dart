@@ -3,11 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../theme/app_theme.dart';
+import '../../models/chat_message.dart';
 
 class InteractionArea extends StatefulWidget {
   final VoidCallback? onFlipCamera;
+  final List<ChatMessage> messages;
+  final bool isTyping;
+  final ValueNotifier<String>? translationNotifier;
 
-  const InteractionArea({super.key, this.onFlipCamera});
+  const InteractionArea({
+    super.key,
+    this.onFlipCamera,
+    this.messages = const [],
+    this.isTyping = false,
+    this.translationNotifier,
+  });
 
   @override
   State<InteractionArea> createState() => _InteractionAreaState();
@@ -54,108 +64,150 @@ class _InteractionAreaState extends State<InteractionArea>
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          // Chat History
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              children: [
-                // Date Separator
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 24.0),
-                    child: Text(
-                      "Live Session • 10:42 AM",
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.mutedGray,
+
+          // Live Translation Preview
+          if (widget.translationNotifier != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+              child: ValueListenableBuilder<String>(
+                valueListenable: widget.translationNotifier!,
+                builder: (context, value, child) {
+                  if (value.trim().isEmpty) return const SizedBox.shrink();
+                  return Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.glassWhite,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: AppColors.signalGreen.withValues(alpha: 0.5),
                       ),
                     ),
-                  ),
-                ),
-
-                // User Message (Received/Glassmorphic)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(18),
-                          topRight: Radius.circular(18),
-                          bottomRight: Radius.circular(18),
-                          bottomLeft: Radius.circular(4),
-                        ),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                          child: Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: AppColors.glassWhite,
-                              border: Border.all(color: AppColors.glassBorder),
-                            ),
-                            child: Text(
-                              "I need to renew my identification card...",
-                              style: AppTextStyles.body,
-                            ),
+                    child: Column(
+                      children: [
+                        Text(
+                          "LIVE TRANSLATION",
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppColors.signalGreen,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "Detected from Sign • 98% confidence",
-                        style: AppTextStyles.caption.copyWith(
-                          color: AppColors.signalGreen,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                // Staff Message (Sent/White)
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(18),
-                            topRight: Radius.circular(18),
-                            bottomLeft: Radius.circular(18),
-                            bottomRight: Radius.circular(4),
-                          ),
-                        ),
-                        child: Text(
-                          "I can help with that...",
+                        const SizedBox(height: 4),
+                        Text(
+                          value,
+                          textAlign: TextAlign.center,
                           style: AppTextStyles.body.copyWith(
-                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text("Spoken", style: AppTextStyles.caption),
-                    ],
-                  ),
-                ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
 
-                const SizedBox(height: 24),
+          // Chat History
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              itemCount: widget.messages.length + (widget.isTyping ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index == widget.messages.length) {
+                  // Typing Indicator
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Row(
+                      children: [
+                        _buildDot(0),
+                        const SizedBox(width: 4),
+                        _buildDot(100),
+                        const SizedBox(width: 4),
+                        _buildDot(200),
+                      ],
+                    ),
+                  );
+                }
 
-                // Typing Indicator
-                Row(
-                  children: [
-                    _buildDot(0),
-                    const SizedBox(width: 4),
-                    _buildDot(100),
-                    const SizedBox(width: 4),
-                    _buildDot(200),
-                  ],
-                ),
-              ],
+                final message = widget.messages[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 24.0),
+                  child: message.isUser
+                      ? // User Message (Received/Glassmorphic)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(18),
+                                  topRight: Radius.circular(18),
+                                  bottomRight: Radius.circular(18),
+                                  bottomLeft: Radius.circular(4),
+                                ),
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                    sigmaX: 12,
+                                    sigmaY: 12,
+                                  ),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.glassWhite,
+                                      border: Border.all(
+                                        color: AppColors.glassBorder,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      message.text,
+                                      style: AppTextStyles.body,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                "Detected from Sign",
+                                style: AppTextStyles.caption.copyWith(
+                                  color: AppColors.signalGreen,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : // Staff Message (Sent/White)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(18),
+                                    topRight: Radius.circular(18),
+                                    bottomLeft: Radius.circular(18),
+                                    bottomRight: Radius.circular(4),
+                                  ),
+                                ),
+                                child: Text(
+                                  message.text,
+                                  style: AppTextStyles.body.copyWith(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text("Spoken", style: AppTextStyles.caption),
+                            ],
+                          ),
+                        ),
+                );
+              },
             ),
           ),
 
