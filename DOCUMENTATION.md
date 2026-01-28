@@ -3,7 +3,7 @@
 ## 1. Project Overview
 SignSpeak Live is a real-time Sign Language Translation application designed to bridge communication gaps between Deaf and hearing individuals. The application leverages on-device Machine Learning to interpret sign language gestures and converts them into spoken text, while simultaneously transcribing spoken words into text for the Deaf user.
 
-**Current Status:** Phase 2: Vision Pipeline (Active Development)
+**Current Status:** Phase 3: Gemini Integration (Prototype Ready)
 
 ## 2. Directory Structure
 The project adopts a feature-first and layered architecture to ensure scalability and maintainability:
