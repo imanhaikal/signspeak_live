@@ -15,6 +15,8 @@ A Flutter recreation of a high-fidelity Sign Language Translation interface. Thi
 *   ✅ **Text-to-Speech (TTS):** Converts translated text into audible speech for seamless communication. (**Ready**)
 *   ✅ **Visual Debugging / Skeleton Overlay:** Real-time pose landmark visualization ("Cyber-Noir" style) overlaid on the camera feed. (**Complete**)
 *   ✅ **Glassmorphic UI & Animations:** A modern, translucent UI design featuring animated typing indicators. (**Active**)
+*   ✅ **Performance Optimized:** Implements intelligent throttling (10 FPS for ML inference, 2s rate limit for API) to ensure smooth performance and cost efficiency.
+*   ✅ **Live Translation Feedback:** Displays real-time interpretation results instantly on the screen as they are processed.
 *   **Custom Camera Interface:** Specialized camera implementation for optimal frame capture and processing.
 *   **Camera Controls:** Seamlessly switch between front and back cameras with the Flip Camera feature.
 *   **Immersive Camera Viewport:** Includes a MediaPipe overlay simulation to demonstrate hand tracking capabilities.
@@ -78,6 +80,7 @@ For specific test files:
 flutter test test/services/camera_service_test.dart
 flutter test test/widgets/camera/camera_viewport_test.dart
 flutter test test/services/gemini_service_test.dart
+flutter test test/latency_management_test.dart
 ```
 
 To run the Gemini integration test (requires a valid `GEMINI_API_KEY` in `.env`):
@@ -93,6 +96,7 @@ flutter test test/integration/gemini_service_integration_test.dart
 - **Gemini Service**: Tests API initialization, model configuration, and message generation.
 - **Image Utils**: Tests conversion of camera frames to ML Kit input format and rotation logic.
 - **Landmark Utils**: Tests conversion of pose landmarks to normalized JSON format for Gemini integration.
+- **Latency Management**: Tests API throttling logic and real-time UI updates.
 
 ## Screenshots
 

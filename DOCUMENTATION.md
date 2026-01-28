@@ -49,6 +49,11 @@ The visual interface follows a composition model using a layered `Stack` layout 
 ### 3.4 State Management
 The application uses a hybrid approach for state management suited for the MVP:
 *   **GlobalKey Pattern**: The `HomeScreen` uses a `GlobalKey<CameraViewportState>` to directly invoke the `flipCamera()` method on the `CameraViewport` when the flip button in `InteractionArea` is pressed. This avoids complex state management boilerplate for this specific hardware interaction.
+*   **ValueNotifiers**: Used for high-frequency updates like the "Live Translation" text to avoid full widget tree rebuilds.
+
+### 3.5 Performance & Optimization
+*   **ML Inference Throttling**: `CameraViewport` limits frame processing to ~10 FPS to reduce CPU load and prevent UI jank.
+*   **API Rate Limiting**: `HomeScreen` implements a strict 2-second debounce/throttle mechanism for `GeminiService` calls to manage API costs and latency.
 
 ## 4. Module Details
 
@@ -64,6 +69,7 @@ Handles the rendering of the live camera feed and AR overlays.
 Handles the communication interface between the user and the system.
 *   **`InteractionArea`**: The main container for the chat and controls.
 *   **Glassmorphism**: Uses `BackdropFilter` and semi-transparent colors to create a modern, unobtrusive overlay.
+*   **Live Translation Display**: Shows real-time interpretation results above the chat history.
 *   **Chat UI**: Displays the bi-directional conversation (transcribed speech and translated signs).
 *   **Controls**: Microphone input, keyboard toggle, and **Camera Flip**. The flip action is delegated to the parent widget via a callback function, maintaining loose coupling.
 
@@ -95,6 +101,7 @@ We employ a comprehensive testing strategy to ensure reliability:
 *   **`PosePainterTest`**: Widget tests validating the custom painting logic, ensuring skeletal landmarks are drawn correctly based on input poses.
 *   **`ImageUtilsTest`**: Unit tests verifying the accurate conversion of Flutter `CameraImage` formats to ML Kit `InputImage` formats, including rotation mapping and format handling.
 *   **`LandmarkUtilsTest`**: Unit tests verifying the correct normalization and JSON serialization of pose landmarks, ensuring data integrity for API requests.
+*   **`LatencyManagementTest`**: Integration tests verifying the API throttling logic and live UI updates.
 
 ## 7. Future Improvements
 To transition this MVP into a fully functional product, the following steps are prioritized:
